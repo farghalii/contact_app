@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 
 class UserInfo extends StatelessWidget {
   String hint;
-  UserInfo({required this.hint});
+  bool? border = true;
+  UserInfo({required this.hint,  this.border});
   @override
   Widget build(BuildContext context) {
     return TextField(
+      
         readOnly: true,
         decoration: InputDecoration(
           hintStyle: TextStyle(color: Appcolors.gold),
