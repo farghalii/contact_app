@@ -25,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   File? selectedImage;
   List<Contacts> contacts = [];
+  GlobalKey<FormState> formkey = GlobalKey<FormState>();
 
   addContact(String username, String email, String phone_number) {
     if (contacts.length < 6) {
@@ -50,19 +51,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   displayBottomSheet(context) {
     showModalBottomSheet(
-        backgroundColor: Appcolors.background,
-        context: context,
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setModalState) {
-              return Container(
-                height: MediaQuery.of(context).size.height * .6,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  child: Column(
-                    children: [
-                      Row(
+      backgroundColor: Appcolors.background,
+      context: context,
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height * .9,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Form(
+                key: formkey,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
                         spacing: 10,
                         children: [
                           Container(
@@ -82,7 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   setState(() {
                                     selectedImage = File(pickedImage.path);
                                   });
-                                  setModalState(() {});
                                 }
                               },
                               child: selectedImage == null
@@ -102,19 +104,133 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 UserInfo(hint: 'User Name'),
                                 UserInfo(hint: 'example@email.com'),
-                                UserInfo(hint: '+200000000000'),
+                                UserInfo(
+                                  hint: '+200000000000',
+                                  border: false,
+                                ),
                               ],
                             ),
                           )
                         ],
-                      )
-                    ],
-                  ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'enter your name';
+                          } else {
+                            return null;
+                          }
+                        },
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                          hintText: 'Enter User Name ',
+                          hintStyle: TextStyle(
+                            color: Color(0xffE2F4F6),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Appcolors.gold)),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'enter your email';
+                          }
+                          if (!value.endsWith('@gmail.com')) {
+                            return 'Invalid Email';
+                          } else {
+                            return null;
+                          }
+                        },
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                          hintText: 'Enter User Email ',
+                          hintStyle: TextStyle(
+                            color: Color(0xffE2F4F6),
+                            fontWeight: FontWeight.w400,
+                          ),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Appcolors.gold)),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'enter your phone number';
+                          }
+                          if (value.length != 11) {
+                            return 'phone number must be 11 numbers';
+                          } else {
+                            return null;
+                          }
+                        },
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w400),
+                        decoration: InputDecoration(
+                          hintText: 'Enter User Phone ',
+                          hintStyle: TextStyle(
+                              color: Color(0xffE2F4F6),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(color: Appcolors.gold)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 90,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Appcolors.gold,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          onPressed: () {
+                            if (formkey.currentState!.validate()) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: Text(
+                            'Enter user',
+                            style: TextStyle(
+                                color: Appcolors.background,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              );
-            },
-          );
-        });
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
